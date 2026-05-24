@@ -26,7 +26,6 @@ body{
 
 h2{
     text-align:center;
-    margin-bottom:20px;
 }
 
 input{
@@ -50,14 +49,13 @@ button{
 }
 
 button:hover{
-    background:#1f57d6;
+    background:#1d56d8;
 }
 
 .error{
     color:red;
     text-align:center;
     margin-top:10px;
-    font-size:14px;
 }
 </style>
 </head>
@@ -77,23 +75,24 @@ button:hover{
 
 <script>
 function login() {
-    // Ambil nilai input
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const error = document.getElementById("error");
 
-    // Validasi login
-    if (username === "admin" && password === "admin123") {
-        alert("Login berhasil!");
+    // Username dan password
+    if(username === "admin" && password === "admin123") {
+
+        // Pindah ke dashboard.html
         window.location.href = "dashboard.html";
+
     } else {
         error.innerHTML = "Username atau password salah!";
     }
 }
 
-// Tekan Enter untuk login
-document.addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
+// Enter untuk login
+document.addEventListener("keydown", function(event){
+    if(event.key === "Enter"){
         login();
     }
 });
