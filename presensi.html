@@ -1,6 +1,215 @@
+# Presensi Siswa dengan Input dan Export
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presensi Siswa</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6fb;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#1f3c88;
+}
+
+input, select{
+    padding:8px;
+    margin:5px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin:5px;
+}
+
+.btn-tambah{
+    background:#2b6cff;
+    color:white;
+}
+
+.btn-export{
+    background:#28a745;
+    color:white;
+}
+
+.btn-kembali{
+    background:#666;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:5px;
+}
+
+.btn-hapus{
+    background:red;
+    color:white;
+    padding:5px 10px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th{
+    background:#1f3c88;
+    color:white;
+    padding:10px;
+}
+
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
 <h2>Presensi Siswa</h2>
-<table border="1" width="100%">
-<tr><th>No</th><th>Nama</th><th>Kelas</th><th>Status</th></tr>
-<tr><td>1</td><td>Andi</td><td>X IPA 1</td><td>Hadir</td></tr>
+
+<input type="text" id="nama" placeholder="Nama Siswa">
+<input type="text" id="kelas" placeholder="Kelas">
+
+<select id="status">
+    <option value="Hadir">Hadir</option>
+    <option value="Izin">Izin</option>
+    <option value="Sakit">Sakit</option>
+    <option value="Alpha">Alpha</option>
+</select>
+
+<button class="btn-tambah" onclick="tambahData()">
+Tambah Data
+</button>
+
+<button class="btn-export" onclick="exportCSV()">
+Export CSV
+</button>
+
+<table id="tabelPresensi">
+<thead>
+<tr>
+    <th>No</th>
+    <th>Nama</th>
+    <th>Kelas</th>
+    <th>Status</th>
+    <th>Aksi</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
 </table>
-<a href="dashboard.html">Kembali</a>
+
+<br>
+
+<a href="dashboard.html" class="btn-kembali">
+Kembali ke Dashboard
+</a>
+
+</div>
+
+<script>
+let nomor = 1;
+
+function tambahData(){
+
+    const nama = document.getElementById("nama").value;
+    const kelas = document.getElementById("kelas").value;
+    const status = document.getElementById("status").value;
+
+    if(nama === "" || kelas === ""){
+        alert("Nama dan kelas harus diisi!");
+        return;
+    }
+
+    const tbody = document.querySelector("#tabelPresensi tbody");
+
+    const row = tbody.insertRow();
+
+    row.innerHTML = `
+        <td>${nomor}</td>
+        <td>${nama}</td>
+        <td>${kelas}</td>
+        <td>${status}</td>
+        <td>
+            <button class="btn-hapus" onclick="hapusRow(this)">
+            Hapus
+            </button>
+        </td>
+    `;
+
+    nomor++;
+
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+}
+
+function hapusRow(button){
+    const row = button.parentElement.parentElement;
+    row.remove();
+}
+
+function exportCSV(){
+
+    const table = document.getElementById("tabelPresensi");
+    let csv = [];
+
+    for(let i = 0; i < table.rows.length; i++){
+        let row = [];
+
+        for(let j = 0; j < table.rows[i].cells.length - 1; j++){
+            row.push(table.rows[i].cells[j].innerText);
+        }
+
+        csv.push(row.join(","));
+    }
+
+    const csvFile = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
+
+    const downloadLink = document.createElement("a");
+
+    downloadLink.download = "presensi_siswa.csv";
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+}
+</script>
+
+</body>
+</html>
+```
+
+Fitur yang tersedia:
+
+* Tambah data siswa manual
+* Pilih status presensi
+* Hapus data
+* Export ke file CSV
+* Kembali ke dash
