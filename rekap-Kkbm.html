@@ -1,3 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rekap KBM</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6fb;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#1f3c88;
+}
+
+input, select{
+    padding:10px;
+    margin:5px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin:5px;
+}
+
+.btn-tambah{
+    background:#2b6cff;
+    color:white;
+}
+
+.btn-export{
+    background:#28a745;
+    color:white;
+}
+
+.btn-import{
+    background:#ff9800;
+    color:white;
+}
+
+.btn-hapus{
+    background:red;
+    color:white;
+}
+
+.btn-kembali{
+    background:#666;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:5px;
+    display:inline-block;
+    margin-top:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th{
+    background:#1f3c88;
+    color:white;
+    padding:10px;
+}
+
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+.summary{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:#eef3ff;
+    padding:15px;
+    border-radius:10px;
+    min-width:150px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
 <h2>Rekap KBM</h2>
-<p>Data rekap kegiatan belajar mengajar.</p>
-<a href="dashboard.html">Kembali</a>
+
+<input type="date" id="tanggal">
+
+<input type="text" id="guru" placeholder="Nama Guru">
+
+<input type="text" id="mapel" placeholder="Mata Pelajaran">
+
+<input type="text" id="kelas" placeholder="Kelas">
+
+<select id="status">
+    <option value="Terlaksana">Terlaksana</option>
+    <option value="Tidak Terlaksana">Tidak Terlaksana</option>
+</select>
+
+<button class="btn-tambah" onclick="tambahData()">
+Tambah Data
+</button>
+
+<button class="btn-export" onclick="exportCSV()">
+Export CSV
+</button>
+
+<br><br>
+
+<input type="file" id="importCSV" accept=".csv">
+
+<button class="btn-import" onclick="importCSVFile()">
+Import CSV
+</button>
+
+<table id="tabelKBM">
+
+<thead>
+<tr>
+    <th>No</th>
+    <th>Tanggal</th>
+    <th>Guru</th>
+    <th>Mapel</th>
+    <th>Kelas</th>
+    <th>Status KBM</th>
+    <th>Aksi</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+
+</table>
+
+<div class="summary">
+
+<div class="card">
+    <h3 id="totalKBM">0</h3>
+    <p>Total KBM</p>
+</div>
+
+<div class="card">
+    <h3 id="terlaksana">0</h3>
+    <p>Terlaksana</p>
+</div>
+
+<div class="card">
+    <h3 id="tidakTerlaksana">0</h3>
+    <p>Tidak Terlaksana</p>
+</div>
+
+</div>
+
+<a href="dashboard.html" class="btn-kembali">
+Kembali ke Dashboard
+</a>
+
+</div>
+
+<script>
+
+let nomor = 1;
+
+function tambahData(){
+
+    const tanggal = document.getElementById("tanggal").value;
+    const guru = document.getElementById("guru").value;
+    const mapel = document.getElementById("mapel").value;
+    const kelas = document.getElementById("kelas").value;
+    const status = document.getElementById("status").value;
+
+    if(tanggal === "" || guru === "" || mapel === "" || kelas === ""){
+        alert("Semua data harus diisi!");
+        return;
+    }
+
+    const tbody = document.querySelector("#tabelKBM tbody");
+
+    const row = tbody.insertRow();
+
+    row.innerHTML = `
+        <td>${nomor}</td>
+        <td>${tanggal}</td>
+        <td>${guru}</td>
+        <td>${mapel}</td>
+        <td>${kelas}</td>
+        <td>${status}</td>
+        <td>
+            <button class="btn-hapus" onclick="hapusRow(this)">
+            Hapus
+            </button>
+        </td>
+    `;
+
+    nomor++;
+
+    updateSummary();
+
+    document.getElementById("tanggal").value = "";
+    document.getElementById("guru").value = "";
+    document.getElementById("mapel").value = "";
+    document.getElementById("kelas").value = "";
+}
+
+function hapusRow(button){
+
+    const row = button.parentElement.parentElement;
+
+    row.remove();
+
+    updateSummary();
+}
+
+function updateSummary(){
+
+    const rows = document.querySelectorAll("#tabelKBM tbody tr");
+
+    let total = rows.length;
+    let terlaksana = 0;
+    let tidak = 0;
+
+    rows.forEach(row => {
+
+        const status = row.cells[5].innerText;
+
+        if(status === "Terlaksana"){
+            terlaksana++;
+        } else {
+            tidak++;
+        }
+
+    });
+
+    document.getElementById("totalKBM").innerText = total;
+    document.getElementById("terlaksana").innerText = terlaksana;
+    document.getElementById("tidakTerlaksana").innerText = tidak;
+}
+
+function exportCSV(){
+
+    const table = document.getElementById("tabelKBM");
+
+    let csv = [];
+
+    for(let i = 0; i < table.rows.length; i++){
+
+        let row = [];
+
+        for(let j = 0; j < table.rows[i].cells.length - 1; j++){
+
+            row.push(table.rows[i].cells[j].innerText);
+
+        }
+
+        csv.push(row.join(","));
+    }
+
+    const csvFile = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
+
+    const downloadLink = document.createElement("a");
+
+    downloadLink.download = "rekap_kbm.csv";
+
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    downloadLink.style.display = "none";
+
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+}
+
+function importCSVFile(){
+
+    const fileInput = document.getElementById("importCSV");
+
+    const file = fileInput.files[0];
+
+    if(!file){
+        alert("Pilih file CSV terlebih dahulu");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const rows = e.target.result.split("\n");
+
+        const tbody = document.querySelector("#tabelKBM tbody");
+
+        for(let i = 1; i < rows.length; i++){
+
+            if(rows[i].trim() === "") continue;
+
+            const cols = rows[i].split(",");
+
+            const row = tbody.insertRow();
+
+            row.innerHTML = `
+                <td>${nomor}</td>
+                <td>${cols[1]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>${cols[4]}</td>
+                <td>${cols[5]}</td>
+                <td>
+                    <button class="btn-hapus" onclick="hapusRow(this)">
+                    Hapus
+                    </button>
+                </td>
+            `;
+
+            nomor++;
+        }
+
+        updateSummary();
+
+        alert("Import CSV berhasil");
+    };
+
+    reader.readAsText(file);
+}
+
+</script>
+
+</body>
+</html>
