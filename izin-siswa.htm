@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Izin Siswa - SMART SMAN 2 Sampit</title>
+<title>Izin Siswa</title>
 
 <style>
 
@@ -23,23 +23,20 @@ body{
     box-shadow:0 0 15px rgba(0,0,0,0.1);
 }
 
-.header{
-    text-align:center;
-    margin-bottom:20px;
-}
-
 .logo{
-    width:100px;
+    width:90px;
+    display:block;
+    margin:auto;
 }
 
 h2{
+    text-align:center;
     color:#1f3c88;
-    margin-top:10px;
 }
 
-.subtitle{
+p{
+    text-align:center;
     color:#666;
-    font-size:14px;
 }
 
 input,
@@ -80,7 +77,6 @@ button{
 .btn-hapus{
     background:red;
     color:white;
-    padding:8px 12px;
 }
 
 .btn-kembali{
@@ -90,7 +86,7 @@ button{
     padding:12px 15px;
     border-radius:8px;
     display:inline-block;
-    margin-top:15px;
+    margin-top:20px;
 }
 
 table{
@@ -102,33 +98,13 @@ table{
 table th{
     background:#1f3c88;
     color:white;
-    padding:12px;
+    padding:10px;
 }
 
 table td{
     border:1px solid #ddd;
     padding:10px;
     text-align:center;
-}
-
-.summary{
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    margin-top:20px;
-}
-
-.card{
-    background:#eef3ff;
-    padding:15px;
-    border-radius:10px;
-    min-width:180px;
-    text-align:center;
-}
-
-.card h3{
-    color:#1f3c88;
-    font-size:28px;
 }
 
 </style>
@@ -138,37 +114,26 @@ table td{
 
 <div class="container">
 
-<div class="header">
-
-<img src="download.png" alt="Logo Sekolah" class="logo">
+<img src="download.png" class="logo">
 
 <h2>Izin Siswa</h2>
 
-<p class="subtitle">
-SMART SMAN 2 Sampit
-</p>
+<p>Form input izin siswa SMART SMAN 2 Sampit</p>
 
-</div>
-
-<label>Tanggal</label>
 <input type="date" id="tanggal">
 
-<label>Nama Siswa</label>
-<input type="text" id="nama" placeholder="Masukkan nama siswa">
+<input type="text" id="nama" placeholder="Nama Siswa">
 
-<label>Kelas</label>
-<input type="text" id="kelas" placeholder="Masukkan kelas">
+<input type="text" id="kelas" placeholder="Kelas">
 
-<label>Jenis Izin</label>
 <select id="jenis">
     <option value="Izin">Izin</option>
     <option value="Sakit">Sakit</option>
     <option value="Dispensasi">Dispensasi</option>
 </select>
 
-<label>Alasan / Keterangan</label>
 <textarea id="keterangan" rows="4"
-placeholder="Masukkan alasan izin"></textarea>
+placeholder="Keterangan izin"></textarea>
 
 <button class="btn-simpan" onclick="tambahData()">
 Simpan Data
@@ -194,7 +159,7 @@ Import CSV
     <th>Tanggal</th>
     <th>Nama</th>
     <th>Kelas</th>
-    <th>Jenis Izin</th>
+    <th>Jenis</th>
     <th>Keterangan</th>
     <th>Aksi</th>
 </tr>
@@ -204,30 +169,6 @@ Import CSV
 </tbody>
 
 </table>
-
-<div class="summary">
-
-<div class="card">
-    <h3 id="totalData">0</h3>
-    <p>Total Data</p>
-</div>
-
-<div class="card">
-    <h3 id="totalIzin">0</h3>
-    <p>Izin</p>
-</div>
-
-<div class="card">
-    <h3 id="totalSakit">0</h3>
-    <p>Sakit</p>
-</div>
-
-<div class="card">
-    <h3 id="totalDispensasi">0</h3>
-    <p>Dispensasi</p>
-</div>
-
-</div>
 
 <a href="dashboard.html" class="btn-kembali">
 Kembali ke Dashboard
@@ -241,11 +182,20 @@ let nomor = 1;
 
 function tambahData(){
 
-    const tanggal = document.getElementById("tanggal").value;
-    const nama = document.getElementById("nama").value;
-    const kelas = document.getElementById("kelas").value;
-    const jenis = document.getElementById("jenis").value;
-    const keterangan = document.getElementById("keterangan").value;
+    const tanggal =
+    document.getElementById("tanggal").value;
+
+    const nama =
+    document.getElementById("nama").value;
+
+    const kelas =
+    document.getElementById("kelas").value;
+
+    const jenis =
+    document.getElementById("jenis").value;
+
+    const keterangan =
+    document.getElementById("keterangan").value;
 
     if(
         tanggal === "" ||
@@ -257,7 +207,8 @@ function tambahData(){
         return;
     }
 
-    const tbody = document.querySelector("#tabelIzin tbody");
+    const tbody =
+    document.querySelector("#tabelIzin tbody");
 
     const row = tbody.insertRow();
 
@@ -278,59 +229,24 @@ function tambahData(){
 
     nomor++;
 
-    updateSummary();
-
     document.getElementById("tanggal").value = "";
     document.getElementById("nama").value = "";
     document.getElementById("kelas").value = "";
     document.getElementById("keterangan").value = "";
-
-    alert("Data izin berhasil disimpan");
 }
 
 function hapusRow(button){
 
-    const row = button.parentElement.parentElement;
+    const row =
+    button.parentElement.parentElement;
 
     row.remove();
-
-    updateSummary();
-}
-
-function updateSummary(){
-
-    const rows = document.querySelectorAll("#tabelIzin tbody tr");
-
-    let total = rows.length;
-    let izin = 0;
-    let sakit = 0;
-    let dispensasi = 0;
-
-    rows.forEach(row => {
-
-        const jenis = row.cells[4].innerText;
-
-        if(jenis === "Izin"){
-            izin++;
-        }
-        else if(jenis === "Sakit"){
-            sakit++;
-        }
-        else if(jenis === "Dispensasi"){
-            dispensasi++;
-        }
-
-    });
-
-    document.getElementById("totalData").innerText = total;
-    document.getElementById("totalIzin").innerText = izin;
-    document.getElementById("totalSakit").innerText = sakit;
-    document.getElementById("totalDispensasi").innerText = dispensasi;
 }
 
 function exportCSV(){
 
-    const table = document.getElementById("tabelIzin");
+    const table =
+    document.getElementById("tabelIzin");
 
     let csv = [];
 
@@ -342,39 +258,37 @@ function exportCSV(){
             j < table.rows[i].cells.length - 1;
             j++){
 
-            row.push(table.rows[i].cells[j].innerText);
+            row.push(
+            table.rows[i].cells[j].innerText
+            );
         }
 
         csv.push(row.join(","));
     }
 
-    const csvFile = new Blob([csv.join("\n")], {
-        type: "text/csv"
-    });
+    const csvFile = new Blob(
+    [csv.join("\n")],
+    {type:"text/csv"}
+    );
 
-    const downloadLink = document.createElement("a");
+    const downloadLink =
+    document.createElement("a");
 
     downloadLink.download = "izin_siswa.csv";
 
     downloadLink.href =
     window.URL.createObjectURL(csvFile);
 
-    downloadLink.style.display = "none";
-
-    document.body.appendChild(downloadLink);
-
     downloadLink.click();
 }
 
 function importCSVFile(){
 
-    const fileInput =
-    document.getElementById("importCSV");
-
-    const file = fileInput.files[0];
+    const file =
+    document.getElementById("importCSV").files[0];
 
     if(!file){
-        alert("Pilih file CSV terlebih dahulu");
+        alert("Pilih file CSV!");
         return;
     }
 
@@ -382,7 +296,8 @@ function importCSVFile(){
 
     reader.onload = function(e){
 
-        const rows = e.target.result.split("\n");
+        const rows =
+        e.target.result.split("\n");
 
         const tbody =
         document.querySelector("#tabelIzin tbody");
@@ -413,9 +328,7 @@ function importCSVFile(){
             nomor++;
         }
 
-        updateSummary();
-
-        alert("Import CSV berhasil");
+        alert("Import berhasil");
     };
 
     reader.readAsText(file);
