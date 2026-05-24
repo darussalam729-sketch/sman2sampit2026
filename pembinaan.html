@@ -6,6 +6,7 @@
 <title>Pembinaan Siswa</title>
 
 <style>
+
 body{
     font-family: Arial, sans-serif;
     background:#f4f6fb;
@@ -72,6 +73,30 @@ button{
     margin-top:15px;
 }
 
+.sp1{
+    background:#fff3cd;
+    color:#856404;
+    padding:5px;
+    border-radius:5px;
+    font-weight:bold;
+}
+
+.sp2{
+    background:#ffe0b2;
+    color:#e65100;
+    padding:5px;
+    border-radius:5px;
+    font-weight:bold;
+}
+
+.sp3{
+    background:#f8d7da;
+    color:#721c24;
+    padding:5px;
+    border-radius:5px;
+    font-weight:bold;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -89,6 +114,22 @@ table td{
     padding:10px;
     text-align:center;
 }
+
+.summary{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.card{
+    background:#eef3ff;
+    padding:15px;
+    border-radius:10px;
+    min-width:150px;
+    text-align:center;
+}
+
 </style>
 </head>
 
@@ -98,7 +139,7 @@ table td{
 
 <h2>Pembinaan Siswa</h2>
 
-<p>Data pembinaan dan pelanggaran siswa.</p>
+<p>Data pembinaan, pelanggaran, dan Surat Peringatan siswa.</p>
 
 <label>Tanggal</label>
 <input type="date" id="tanggal">
@@ -115,14 +156,23 @@ table td{
     <option value="Tidak Memakai Seragam">Tidak Memakai Seragam</option>
     <option value="Tidak Masuk Tanpa Keterangan">Tidak Masuk Tanpa Keterangan</option>
     <option value="Merokok">Merokok</option>
+    <option value="Perkelahian">Perkelahian</option>
     <option value="Lainnya">Lainnya</option>
+</select>
+
+<label>Surat Peringatan</label>
+<select id="sp">
+    <option value="Tidak Ada">Tidak Ada</option>
+    <option value="SP 1">SP 1</option>
+    <option value="SP 2">SP 2</option>
+    <option value="SP 3">SP 3</option>
 </select>
 
 <label>Tindakan Pembinaan</label>
 <textarea id="pembinaan" rows="5" placeholder="Masukkan tindakan pembinaan"></textarea>
 
 <button class="btn-simpan" onclick="tambahData()">
-Simpan
+Simpan Data
 </button>
 
 <button class="btn-export" onclick="exportCSV()">
@@ -146,6 +196,7 @@ Import CSV
     <th>Nama</th>
     <th>Kelas</th>
     <th>Pelanggaran</th>
+    <th>Surat Peringatan</th>
     <th>Pembinaan</th>
     <th>Aksi</th>
 </tr>
@@ -155,6 +206,30 @@ Import CSV
 </tbody>
 
 </table>
+
+<div class="summary">
+
+<div class="card">
+    <h3 id="total">0</h3>
+    <p>Total Kasus</p>
+</div>
+
+<div class="card">
+    <h3 id="sp1">0</h3>
+    <p>SP 1</p>
+</div>
+
+<div class="card">
+    <h3 id="sp2">0</h3>
+    <p>SP 2</p>
+</div>
+
+<div class="card">
+    <h3 id="sp3">0</h3>
+    <p>SP 3</p>
+</div>
+
+</div>
 
 <a href="dashboard.html" class="kembali">
 Kembali ke Dashboard
@@ -172,11 +247,22 @@ function tambahData(){
     const nama = document.getElementById("nama").value;
     const kelas = document.getElementById("kelas").value;
     const pelanggaran = document.getElementById("pelanggaran").value;
+    const sp = document.getElementById("sp").value;
     const pembinaan = document.getElementById("pembinaan").value;
 
     if(tanggal === "" || nama === "" || kelas === "" || pembinaan === ""){
         alert("Semua data harus diisi!");
         return;
+    }
+
+    let spClass = "";
+
+    if(sp === "SP 1"){
+        spClass = "sp1";
+    }else if(sp === "SP 2"){
+        spClass = "sp2";
+    }else if(sp === "SP 3"){
+        spClass = "sp3";
     }
 
     const tbody = document.querySelector("#tabelPembinaan tbody");
@@ -189,6 +275,7 @@ function tambahData(){
         <td>${nama}</td>
         <td>${kelas}</td>
         <td>${pelanggaran}</td>
+        <td><span class="${spClass}">${sp}</span></td>
         <td>${pembinaan}</td>
         <td>
             <button class="btn-hapus" onclick="hapusRow(this)">
@@ -198,6 +285,8 @@ function tambahData(){
     `;
 
     nomor++;
+
+    updateSummary();
 
     document.getElementById("tanggal").value = "";
     document.getElementById("nama").value = "";
@@ -212,6 +301,37 @@ function hapusRow(button){
     const row = button.parentElement.parentElement;
 
     row.remove();
+
+    updateSummary();
+}
+
+function updateSummary(){
+
+    const rows = document.querySelectorAll("#tabelPembinaan tbody tr");
+
+    let total = rows.length;
+    let totalSP1 = 0;
+    let totalSP2 = 0;
+    let totalSP3 = 0;
+
+    rows.forEach(row => {
+
+        const sp = row.cells[5].innerText;
+
+        if(sp === "SP 1"){
+            totalSP1++;
+        }else if(sp === "SP 2"){
+            totalSP2++;
+        }else if(sp === "SP 3"){
+            totalSP3++;
+        }
+
+    });
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("sp1").innerText = totalSP1;
+    document.getElementById("sp2").innerText = totalSP2;
+    document.getElementById("sp3").innerText = totalSP3;
 }
 
 function exportCSV(){
@@ -275,6 +395,16 @@ function importCSVFile(){
 
             const cols = rows[i].split(",");
 
+            let spClass = "";
+
+            if(cols[5] === "SP 1"){
+                spClass = "sp1";
+            }else if(cols[5] === "SP 2"){
+                spClass = "sp2";
+            }else if(cols[5] === "SP 3"){
+                spClass = "sp3";
+            }
+
             const row = tbody.insertRow();
 
             row.innerHTML = `
@@ -283,7 +413,8 @@ function importCSVFile(){
                 <td>${cols[2]}</td>
                 <td>${cols[3]}</td>
                 <td>${cols[4]}</td>
-                <td>${cols[5]}</td>
+                <td><span class="${spClass}">${cols[5]}</span></td>
+                <td>${cols[6]}</td>
                 <td>
                     <button class="btn-hapus" onclick="hapusRow(this)">
                     Hapus
@@ -293,6 +424,8 @@ function importCSVFile(){
 
             nomor++;
         }
+
+        updateSummary();
 
         alert("Import CSV berhasil");
     };
