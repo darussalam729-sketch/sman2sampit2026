@@ -3,56 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presensi Siswa - SMART SMAN 2 Sampit</title>
-    <!-- Tambahkan library QR Scanner -->
+    <title>Presensi SMART - SMAN 2 Sampit</title>
+    <!-- Library QR Code Scanner -->
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f6fb; margin:0; padding:20px; color: #333; }
-        .container { background:white; padding:25px; border-radius:15px; box-shadow:0 5px 20px rgba(0,0,0,0.05); max-width: 900px; margin: auto; }
-        h2 { color:#1f3c88; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        body { font-family: 'Poppins', sans-serif; background:#f4f6fb; margin:0; padding:20px; }
+        .container { background:white; padding:25px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
         
-        .section-qr { background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px dashed #2b6cff; }
+        h2 { color:#1f3c88; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        
+        /* Scanner Style */
+        .scanner-section { background: #f8f9fa; border: 2px dashed #2b6cff; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 30px; }
         #reader { width: 100%; max-width: 400px; margin: auto; border-radius: 10px; overflow: hidden; }
         
-        .form-group { margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 8px; flex: 1; min-width: 150px; }
+        /* Form Style */
+        .input-area { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background: #eee; padding: 15px; border-radius: 10px; }
+        input, select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; flex: 1; min-width: 150px; }
         
-        button { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        /* Button Style */
+        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .btn-tambah { background:#2b6cff; color:white; }
-        .btn-tambah:hover { background: #1a43a3; }
         .btn-export { background:#28a745; color:white; }
         .btn-import { background:#ff9800; color:white; }
-        .btn-scan { background: #6f42c1; color: white; }
-        .btn-kembali { background:#666; color:white; text-decoration:none; display: inline-block; margin-top: 20px; }
-        .btn-hapus { background:#dc3545; color:white; padding:5px 12px; font-size: 0.8rem; }
+        .btn-hapus { background:#ff4d4d; color:white; padding: 5px 10px; font-size: 12px; }
+        .btn-kembali { background:#666; color:white; text-decoration:none; padding:12px 20px; border-radius:8px; display: inline-block; margin-top: 20px; }
 
-        table { width:100%; border-collapse:collapse; margin-top:20px; background: white; }
-        table th { background:#1f3c88; color:white; padding:12px; text-align: left; }
-        table td { border-bottom:1px solid #eee; padding:12px; }
-        tr:hover { background: #f8f9fa; }
+        /* Table Style */
+        table { width:100%; border-collapse:collapse; margin-top:20px; }
+        table th { background:#1f3c88; color:white; padding:15px; text-align: left; }
+        table td { border-bottom: 1px solid #ddd; padding: 12px; }
         
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
-        .status-hadir { background: #d4edda; color: #155724; }
-        .status-izin { background: #fff3cd; color: #856404; }
-        .status-sakit { background: #cce5ff; color: #004085; }
-        .status-alpha { background: #f8d7da; color: #721c24; }
+        /* Badge Status */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-hadir { background: #d4edda; color: #155724; }
+        .badge-izin { background: #fff3cd; color: #856404; }
+        .badge-sakit { background: #cce5ff; color: #004085; }
+        .badge-alpha { background: #f8d7da; color: #721c24; }
+
+        #status-scan { margin-top: 10px; font-weight: bold; color: #28a745; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2><i class="fas fa-qrcode"></i> Presensi Siswa SMART</h2>
+    <h2><span style="font-size: 1.5em;">📸</span> Presensi QR & Manual</h2>
 
-    <!-- Bagian QR Scanner -->
-    <div class="section-qr">
-        <p style="font-weight: bold; margin-bottom: 10px;">Pindai Kartu Pelajar (QR Code):</p>
+    <!-- Bagian Scanner -->
+    <div class="scanner-section">
+        <p>Arahkan Kode QR Siswa ke Kamera</p>
         <div id="reader"></div>
-        <p id="result-scan" style="text-align: center; color: #28a745; font-weight: bold; margin-top: 10px;"></p>
+        <div id="status-scan">Siap Memindai...</div>
     </div>
 
-    <!-- Form Input Manual -->
-    <div class="form-group">
+    <!-- Input Manual -->
+    <div class="input-area">
         <input type="text" id="nama" placeholder="Nama Siswa">
         <input type="text" id="kelas" placeholder="Kelas">
         <select id="status">
@@ -61,15 +67,14 @@
             <option value="Sakit">Sakit</option>
             <option value="Alpha">Alpha</option>
         </select>
-        <button class="btn-tambah" onclick="tambahData()">Tambah Data</button>
+        <button class="btn-tambah" onclick="tambahData()">Tambah Manual</button>
     </div>
 
-    <div class="form-group" style="background: #eee; padding: 15px; border-radius: 10px;">
-        <button class="btn-export" onclick="exportCSV()">Export CSV</button>
-        <div style="flex-grow: 1;">
-            <input type="file" id="importCSV" accept=".csv" style="width: auto;">
-            <button class="btn-import" onclick="importCSVFile()">Import CSV</button>
-        </div>
+    <!-- Fitur File -->
+    <div style="margin-bottom: 20px;">
+        <button class="btn-export" onclick="exportCSV()">Export ke Excel (CSV)</button>
+        <input type="file" id="importCSV" accept=".csv" style="width: auto; margin-left: 10px;">
+        <button class="btn-import" onclick="importCSVFile()">Import CSV</button>
     </div>
 
     <table id="tabelPresensi">
@@ -79,12 +84,11 @@
                 <th>Nama</th>
                 <th>Kelas</th>
                 <th>Status</th>
+                <th>Waktu</th>
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Data akan masuk di sini -->
-        </tbody>
+        <tbody></tbody>
     </table>
 
     <a href="dashboard.html" class="btn-kembali">Kembali ke Dashboard</a>
@@ -94,105 +98,103 @@
 let nomor = 1;
 
 // --- LOGIKA SCANNER QR ---
-const html5QrCode = new Html5Qrcode("reader");
-const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-    // Format QR yang diharapkan: "Nama Siswa - Kelas"
-    const data = decodedText.split(" - ");
-    if(data.length >= 2) {
-        document.getElementById("nama").value = data[0];
-        document.getElementById("kelas").value = data[1];
-        document.getElementById("status").value = "Hadir";
+function onScanSuccess(decodedText, decodedResult) {
+    // Asumsi format isi QR adalah "Nama|Kelas" (Contoh: "Budi Santoso|XI-IPA-1")
+    const dataSiswa = decodedText.split("|");
+    
+    if(dataSiswa.length >= 2) {
+        const namaScan = dataSiswa[0];
+        const kelasScan = dataSiswa[1];
         
-        tambahData(); // Langsung masukkan ke tabel
-        document.getElementById("result-scan").innerText = "Berhasil scan: " + data[0];
+        tambahDataOtomatis(namaScan, kelasScan, "Hadir");
         
-        // Berhenti scan sejenak agar tidak double input
-        html5QrCode.pause();
-        setTimeout(() => html5QrCode.resume(), 3000);
+        document.getElementById("status-scan").innerText = "✅ Berhasil: " + namaScan;
+        
+        // Jeda 2 detik sebelum bisa scan lagi (mencegah double input)
+        html5QrcodeScanner.pause();
+        setTimeout(() => html5QrcodeScanner.resume(), 2000);
     } else {
-        alert("Format QR salah! Gunakan format: Nama - Kelas");
+        alert("Format QR tidak dikenali. Gunakan format: Nama|Kelas");
     }
-};
+}
 
-const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback);
+let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+html5QrcodeScanner.render(onScanSuccess);
 
-
-// --- LOGIKA DATA TABEL ---
+// --- LOGIKA DATA ---
 function tambahData() {
     const nama = document.getElementById("nama").value;
     const kelas = document.getElementById("kelas").value;
     const status = document.getElementById("status").value;
 
-    if(nama === "" || kelas === ""){
+    if(nama === "" || kelas === "") {
         alert("Nama dan kelas harus diisi!");
         return;
     }
+    tambahDataOtomatis(nama, kelas, status);
+    
+    // Reset form
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+}
 
+function tambahDataOtomatis(nama, kelas, status) {
     const tbody = document.querySelector("#tabelPresensi tbody");
     const row = tbody.insertRow();
-    
-    // Tentukan class warna berdasarkan status
-    let statusClass = "status-" + status.toLowerCase();
+    const waktu = new Date().toLocaleTimeString('id-ID');
+
+    let badgeClass = "badge-" + status.toLowerCase();
 
     row.innerHTML = `
         <td>${nomor}</td>
         <td><strong>${nama}</strong></td>
         <td>${kelas}</td>
-        <td><span class="status-badge ${statusClass}">${status}</span></td>
-        <td>
-            <button class="btn-hapus" onclick="hapusRow(this)">Hapus</button>
-        </td>
+        <td><span class="badge ${badgeClass}">${status}</span></td>
+        <td>${waktu}</td>
+        <td><button class="btn-hapus" onclick="hapusRow(this)">Hapus</button></td>
     `;
-
     nomor++;
-    document.getElementById("nama").value = "";
-    document.getElementById("kelas").value = "";
 }
 
-function hapusRow(button){
+function hapusRow(btn) {
     if(confirm("Hapus data ini?")) {
-        button.parentElement.parentElement.remove();
+        btn.parentElement.parentElement.remove();
     }
 }
 
-// Logika Export & Import tetap sama dengan penyesuaian tampilan
-function exportCSV(){
-    const table = document.getElementById("tabelPresensi");
-    let csv = [];
-    for(let i = 0; i < table.rows.length; i++){
-        let row = [];
-        for(let j = 0; j < table.rows[i].cells.length - 1; j++){
-            row.push(table.rows[i].cells[j].innerText);
+function exportCSV() {
+    let csv = ["No,Nama,Kelas,Status,Waktu"];
+    const rows = document.querySelectorAll("#tabelPresensi tbody tr");
+    
+    rows.forEach(row => {
+        const cols = row.querySelectorAll("td");
+        let rowData = [];
+        for(let i = 0; i < cols.length - 1; i++) {
+            rowData.push(cols[i].innerText);
         }
-        csv.push(row.join(","));
-    }
+        csv.push(rowData.join(","));
+    });
+
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-    const downloadLink = document.createElement("a");
-    downloadLink.download = "presensi_smart_sman2.csv";
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "none";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
+    const link = document.createElement("a");
+    link.download = "presensi_smart.csv";
+    link.href = URL.createObjectURL(csvFile);
+    link.click();
 }
 
-function importCSVFile(){
-    const fileInput = document.getElementById("importCSV");
-    const file = fileInput.files[0];
-    if(!file){ alert("Pilih file CSV!"); return; }
+function importCSVFile() {
+    const file = document.getElementById("importCSV").files[0];
+    if(!file) return alert("Pilih file!");
 
     const reader = new FileReader();
-    reader.onload = function(e){
-        const rows = e.target.result.split("\n");
-        for(let i = 1; i < rows.length; i++){
-            if(rows[i].trim() === "") continue;
-            const cols = rows[i].split(",");
-            document.getElementById("nama").value = cols[1];
-            document.getElementById("kelas").value = cols[2];
-            document.getElementById("status").value = cols[3];
-            tambahData();
+    reader.onload = function(e) {
+        const lines = e.target.result.split("\n");
+        for(let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(",");
+            if(cols.length >= 4) {
+                tambahDataOtomatis(cols[1], cols[2], cols[3]);
+            }
         }
-        alert("Import Berhasil!");
     };
     reader.readAsText(file);
 }
