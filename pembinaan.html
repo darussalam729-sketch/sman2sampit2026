@@ -1,3 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembinaan Siswa</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6fb;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#1f3c88;
+}
+
+input, textarea, select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.btn-simpan{
+    background:#2b6cff;
+    color:white;
+}
+
+.btn-export{
+    background:#28a745;
+    color:white;
+}
+
+.btn-import{
+    background:#ff9800;
+    color:white;
+}
+
+.btn-hapus{
+    background:red;
+    color:white;
+    padding:5px 10px;
+}
+
+.kembali{
+    background:#666;
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:5px;
+    display:inline-block;
+    margin-top:15px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th{
+    background:#1f3c88;
+    color:white;
+    padding:10px;
+}
+
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
 <h2>Pembinaan Siswa</h2>
+
 <p>Data pembinaan dan pelanggaran siswa.</p>
-<a href="dashboard.html">Kembali</a>
+
+<label>Tanggal</label>
+<input type="date" id="tanggal">
+
+<label>Nama Siswa</label>
+<input type="text" id="nama" placeholder="Masukkan nama siswa">
+
+<label>Kelas</label>
+<input type="text" id="kelas" placeholder="Masukkan kelas">
+
+<label>Jenis Pelanggaran</label>
+<select id="pelanggaran">
+    <option value="Terlambat">Terlambat</option>
+    <option value="Tidak Memakai Seragam">Tidak Memakai Seragam</option>
+    <option value="Tidak Masuk Tanpa Keterangan">Tidak Masuk Tanpa Keterangan</option>
+    <option value="Merokok">Merokok</option>
+    <option value="Lainnya">Lainnya</option>
+</select>
+
+<label>Tindakan Pembinaan</label>
+<textarea id="pembinaan" rows="5" placeholder="Masukkan tindakan pembinaan"></textarea>
+
+<button class="btn-simpan" onclick="tambahData()">
+Simpan
+</button>
+
+<button class="btn-export" onclick="exportCSV()">
+Export CSV
+</button>
+
+<br><br>
+
+<input type="file" id="importCSV" accept=".csv">
+
+<button class="btn-import" onclick="importCSVFile()">
+Import CSV
+</button>
+
+<table id="tabelPembinaan">
+
+<thead>
+<tr>
+    <th>No</th>
+    <th>Tanggal</th>
+    <th>Nama</th>
+    <th>Kelas</th>
+    <th>Pelanggaran</th>
+    <th>Pembinaan</th>
+    <th>Aksi</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+
+</table>
+
+<a href="dashboard.html" class="kembali">
+Kembali ke Dashboard
+</a>
+
+</div>
+
+<script>
+
+let nomor = 1;
+
+function tambahData(){
+
+    const tanggal = document.getElementById("tanggal").value;
+    const nama = document.getElementById("nama").value;
+    const kelas = document.getElementById("kelas").value;
+    const pelanggaran = document.getElementById("pelanggaran").value;
+    const pembinaan = document.getElementById("pembinaan").value;
+
+    if(tanggal === "" || nama === "" || kelas === "" || pembinaan === ""){
+        alert("Semua data harus diisi!");
+        return;
+    }
+
+    const tbody = document.querySelector("#tabelPembinaan tbody");
+
+    const row = tbody.insertRow();
+
+    row.innerHTML = `
+        <td>${nomor}</td>
+        <td>${tanggal}</td>
+        <td>${nama}</td>
+        <td>${kelas}</td>
+        <td>${pelanggaran}</td>
+        <td>${pembinaan}</td>
+        <td>
+            <button class="btn-hapus" onclick="hapusRow(this)">
+            Hapus
+            </button>
+        </td>
+    `;
+
+    nomor++;
+
+    document.getElementById("tanggal").value = "";
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+    document.getElementById("pembinaan").value = "";
+
+    alert("Data pembinaan berhasil disimpan");
+}
+
+function hapusRow(button){
+
+    const row = button.parentElement.parentElement;
+
+    row.remove();
+}
+
+function exportCSV(){
+
+    const table = document.getElementById("tabelPembinaan");
+
+    let csv = [];
+
+    for(let i = 0; i < table.rows.length; i++){
+
+        let row = [];
+
+        for(let j = 0; j < table.rows[i].cells.length - 1; j++){
+
+            row.push(table.rows[i].cells[j].innerText);
+
+        }
+
+        csv.push(row.join(","));
+    }
+
+    const csvFile = new Blob([csv.join("\n")], {
+        type: "text/csv"
+    });
+
+    const downloadLink = document.createElement("a");
+
+    downloadLink.download = "pembinaan_siswa.csv";
+
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    downloadLink.style.display = "none";
+
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+}
+
+function importCSVFile(){
+
+    const fileInput = document.getElementById("importCSV");
+
+    const file = fileInput.files[0];
+
+    if(!file){
+        alert("Pilih file CSV terlebih dahulu");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const rows = e.target.result.split("\n");
+
+        const tbody = document.querySelector("#tabelPembinaan tbody");
+
+        for(let i = 1; i < rows.length; i++){
+
+            if(rows[i].trim() === "") continue;
+
+            const cols = rows[i].split(",");
+
+            const row = tbody.insertRow();
+
+            row.innerHTML = `
+                <td>${nomor}</td>
+                <td>${cols[1]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>${cols[4]}</td>
+                <td>${cols[5]}</td>
+                <td>
+                    <button class="btn-hapus" onclick="hapusRow(this)">
+                    Hapus
+                    </button>
+                </td>
+            `;
+
+            nomor++;
+        }
+
+        alert("Import CSV berhasil");
+    };
+
+    reader.readAsText(file);
+}
+
+</script>
+
+</body>
+</html>
