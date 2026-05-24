@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izin Siswa</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6fb;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+.logo{
+    width:90px;
+    display:block;
+    margin:auto;
+}
+
+h2{
+    text-align:center;
+    color:#1f3c88;
+}
+
+p{
+    text-align:center;
+    color:#666;
+}
+
+input,
+select,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+button{
+    padding:12px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.btn-simpan{
+    background:#2b6cff;
+    color:white;
+}
+
+.btn-export{
+    background:#28a745;
+    color:white;
+}
+
+.btn-import{
+    background:#ff9800;
+    color:white;
+}
+
+.btn-hapus{
+    background:red;
+    color:white;
+}
+
+.btn-kembali{
+    background:#666;
+    color:white;
+    text-decoration:none;
+    padding:12px 15px;
+    border-radius:8px;
+    display:inline-block;
+    margin-top:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+table th{
+    background:#1f3c88;
+    color:white;
+    padding:10px;
+}
+
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="download.png" class="logo">
+
+<h2>Izin Siswa</h2>
+
+<p>Form input izin siswa SMART SMAN 2 Sampit</p>
+
+<input type="date" id="tanggal">
+
+<input type="text" id="nama" placeholder="Nama Siswa">
+
+<input type="text" id="kelas" placeholder="Kelas">
+
+<select id="jenis">
+    <option value="Izin">Izin</option>
+    <option value="Sakit">Sakit</option>
+    <option value="Dispensasi">Dispensasi</option>
+</select>
+
+<textarea id="keterangan" rows="4"
+placeholder="Keterangan izin"></textarea>
+
+<button class="btn-simpan" onclick="tambahData()">
+Simpan Data
+</button>
+
+<button class="btn-export" onclick="exportCSV()">
+Export CSV
+</button>
+
+<br><br>
+
+<input type="file" id="importCSV" accept=".csv">
+
+<button class="btn-import" onclick="importCSVFile()">
+Import CSV
+</button>
+
+<table id="tabelIzin">
+
+<thead>
+<tr>
+    <th>No</th>
+    <th>Tanggal</th>
+    <th>Nama</th>
+    <th>Kelas</th>
+    <th>Jenis</th>
+    <th>Keterangan</th>
+    <th>Aksi</th>
+</tr>
+</thead>
+
+<tbody>
+</tbody>
+
+</table>
+
+<a href="dashboard.html" class="btn-kembali">
+Kembali ke Dashboard
+</a>
+
+</div>
+
+<script>
+
+let nomor = 1;
+
+function tambahData(){
+
+    const tanggal =
+    document.getElementById("tanggal").value;
+
+    const nama =
+    document.getElementById("nama").value;
+
+    const kelas =
+    document.getElementById("kelas").value;
+
+    const jenis =
+    document.getElementById("jenis").value;
+
+    const keterangan =
+    document.getElementById("keterangan").value;
+
+    if(
+        tanggal === "" ||
+        nama === "" ||
+        kelas === "" ||
+        keterangan === ""
+    ){
+        alert("Semua data harus diisi!");
+        return;
+    }
+
+    const tbody =
+    document.querySelector("#tabelIzin tbody");
+
+    const row = tbody.insertRow();
+
+    row.innerHTML = `
+        <td>${nomor}</td>
+        <td>${tanggal}</td>
+        <td>${nama}</td>
+        <td>${kelas}</td>
+        <td>${jenis}</td>
+        <td>${keterangan}</td>
+        <td>
+            <button class="btn-hapus"
+            onclick="hapusRow(this)">
+            Hapus
+            </button>
+        </td>
+    `;
+
+    nomor++;
+
+    document.getElementById("tanggal").value = "";
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+    document.getElementById("keterangan").value = "";
+}
+
+function hapusRow(button){
+
+    const row =
+    button.parentElement.parentElement;
+
+    row.remove();
+}
+
+function exportCSV(){
+
+    const table =
+    document.getElementById("tabelIzin");
+
+    let csv = [];
+
+    for(let i = 0; i < table.rows.length; i++){
+
+        let row = [];
+
+        for(let j = 0;
+            j < table.rows[i].cells.length - 1;
+            j++){
+
+            row.push(
+            table.rows[i].cells[j].innerText
+            );
+        }
+
+        csv.push(row.join(","));
+    }
+
+    const csvFile = new Blob(
+    [csv.join("\n")],
+    {type:"text/csv"}
+    );
+
+    const downloadLink =
+    document.createElement("a");
+
+    downloadLink.download = "izin_siswa.csv";
+
+    downloadLink.href =
+    window.URL.createObjectURL(csvFile);
+
+    downloadLink.click();
+}
+
+function importCSVFile(){
+
+    const file =
+    document.getElementById("importCSV").files[0];
+
+    if(!file){
+        alert("Pilih file CSV!");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const rows =
+        e.target.result.split("\n");
+
+        const tbody =
+        document.querySelector("#tabelIzin tbody");
+
+        for(let i = 1; i < rows.length; i++){
+
+            if(rows[i].trim() === "") continue;
+
+            const cols = rows[i].split(",");
+
+            const row = tbody.insertRow();
+
+            row.innerHTML = `
+                <td>${nomor}</td>
+                <td>${cols[1]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>${cols[4]}</td>
+                <td>${cols[5]}</td>
+                <td>
+                    <button class="btn-hapus"
+                    onclick="hapusRow(this)">
+                    Hapus
+                    </button>
+                </td>
+            `;
+
+            nomor++;
+        }
+
+        alert("Import berhasil");
+    };
+
+    reader.readAsText(file);
+}
+
+</script>
+
+</body>
+</html>
