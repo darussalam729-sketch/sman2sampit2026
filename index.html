@@ -21,7 +21,7 @@ body{
     background:white;
     padding:30px;
     border-radius:15px;
-    width:350px;
+    width:370px;
     box-shadow:0 0 15px rgba(0,0,0,0.1);
     text-align:center;
 }
@@ -42,6 +42,7 @@ h2{
     margin-bottom:20px;
 }
 
+select,
 input{
     width:100%;
     padding:12px;
@@ -75,6 +76,15 @@ button:hover{
     font-size:14px;
 }
 
+.info-login{
+    background:#eef3ff;
+    padding:10px;
+    border-radius:8px;
+    margin-top:15px;
+    text-align:left;
+    font-size:13px;
+}
+
 .footer{
     margin-top:20px;
     font-size:12px;
@@ -97,15 +107,51 @@ button:hover{
         Sistem Manajemen Administrasi Sekolah
     </p>
 
+    <!-- PILIH ROLE -->
+    <select id="role">
+        <option value="">-- Pilih Login Sebagai --</option>
+        <option value="admin">Admin</option>
+        <option value="guru">Guru</option>
+        <option value="siswa">Siswa</option>
+        <option value="tas">Tenaga Administrasi Sekolah</option>
+    </select>
+
+    <!-- USERNAME -->
     <input type="text" id="username" placeholder="Masukkan Username">
 
+    <!-- PASSWORD -->
     <input type="password" id="password" placeholder="Masukkan Password">
 
+    <!-- BUTTON -->
     <button type="button" onclick="login()">
         Masuk
     </button>
 
+    <!-- ERROR -->
     <div class="error" id="error"></div>
+
+    <!-- INFO LOGIN -->
+    <div class="info-login">
+
+        <b>Data Login Demo:</b><br><br>
+
+        <b>Admin</b><br>
+        Username: admin<br>
+        Password: admin123<br><br>
+
+        <b>Guru</b><br>
+        Username: guru<br>
+        Password: guru123<br><br>
+
+        <b>Siswa</b><br>
+        Username: siswa<br>
+        Password: siswa123<br><br>
+
+        <b>TAS</b><br>
+        Username: tas<br>
+        Password: tas123
+
+    </div>
 
     <div class="footer">
         © 2026 SMART SMAN 2 Sampit
@@ -117,25 +163,66 @@ button:hover{
 
 function login() {
 
+    let role = document.getElementById("role").value;
     let username = document.getElementById("username").value.trim();
     let password = document.getElementById("password").value.trim();
 
-    if(username === "admin" && password === "admin123"){
+    // ADMIN
+    if(
+        role === "admin" &&
+        username === "admin" &&
+        password === "admin123"
+    ){
 
-        alert("Login berhasil");
+        alert("Login Admin berhasil");
 
-        // pindah ke dashboard
         window.location.href = "dashboard.html";
+    }
 
-    } else {
+    // GURU
+    else if(
+        role === "guru" &&
+        username === "guru" &&
+        password === "guru123"
+    ){
+
+        alert("Login Guru berhasil");
+
+        window.location.href = "dashboard.html";
+    }
+
+    // SISWA
+    else if(
+        role === "siswa" &&
+        username === "siswa" &&
+        password === "siswa123"
+    ){
+
+        alert("Login Siswa berhasil");
+
+        window.location.href = "dashboard.html";
+    }
+
+    // TAS
+    else if(
+        role === "tas" &&
+        username === "tas" &&
+        password === "tas123"
+    ){
+
+        alert("Login TAS berhasil");
+
+        window.location.href = "dashboard.html";
+    }
+
+    else{
 
         document.getElementById("error").innerHTML =
-        "Username atau password salah!";
-
+        "Role, username, atau password salah!";
     }
 }
 
-// tekan enter untuk login
+// ENTER KEYBOARD
 document.addEventListener("keydown", function(e){
 
     if(e.key === "Enter"){
