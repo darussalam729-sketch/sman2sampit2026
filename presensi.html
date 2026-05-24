@@ -1,6 +1,3 @@
-# Presensi Siswa dengan Input dan Export
-
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -49,6 +46,11 @@ button{
 
 .btn-export{
     background:#28a745;
+    color:white;
+}
+
+.btn-import{
+    background:#ff9800;
     color:white;
 }
 
@@ -109,7 +111,16 @@ Tambah Data
 Export CSV
 </button>
 
+<br><br>
+
+<input type="file" id="importCSV" accept=".csv">
+
+<button class="btn-import" onclick="importCSVFile()">
+Import CSV
+</button>
+
 <table id="tabelPresensi">
+
 <thead>
 <tr>
     <th>No</th>
@@ -119,8 +130,10 @@ Export CSV
     <th>Aksi</th>
 </tr>
 </thead>
+
 <tbody>
 </tbody>
+
 </table>
 
 <br>
@@ -132,6 +145,7 @@ Kembali ke Dashboard
 </div>
 
 <script>
+
 let nomor = 1;
 
 function tambahData(){
@@ -175,13 +189,17 @@ function hapusRow(button){
 function exportCSV(){
 
     const table = document.getElementById("tabelPresensi");
+
     let csv = [];
 
     for(let i = 0; i < table.rows.length; i++){
+
         let row = [];
 
         for(let j = 0; j < table.rows[i].cells.length - 1; j++){
+
             row.push(table.rows[i].cells[j].innerText);
+
         }
 
         csv.push(row.join(","));
@@ -194,22 +212,65 @@ function exportCSV(){
     const downloadLink = document.createElement("a");
 
     downloadLink.download = "presensi_siswa.csv";
+
     downloadLink.href = window.URL.createObjectURL(csvFile);
+
     downloadLink.style.display = "none";
 
     document.body.appendChild(downloadLink);
+
     downloadLink.click();
 }
+
+function importCSVFile(){
+
+    const fileInput = document.getElementById("importCSV");
+
+    const file = fileInput.files[0];
+
+    if(!file){
+        alert("Pilih file CSV terlebih dahulu");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const rows = e.target.result.split("\n");
+
+        const tbody = document.querySelector("#tabelPresensi tbody");
+
+        for(let i = 1; i < rows.length; i++){
+
+            if(rows[i].trim() === "") continue;
+
+            const cols = rows[i].split(",");
+
+            const row = tbody.insertRow();
+
+            row.innerHTML = `
+                <td>${nomor}</td>
+                <td>${cols[1]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>
+                    <button class="btn-hapus" onclick="hapusRow(this)">
+                    Hapus
+                    </button>
+                </td>
+            `;
+
+            nomor++;
+        }
+
+        alert("Import CSV berhasil");
+    };
+
+    reader.readAsText(file);
+}
+
 </script>
 
 </body>
 </html>
-```
-
-Fitur yang tersedia:
-
-* Tambah data siswa manual
-* Pilih status presensi
-* Hapus data
-* Export ke file CSV
-* Kembali ke dash
