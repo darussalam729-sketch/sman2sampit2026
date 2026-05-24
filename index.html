@@ -76,15 +76,6 @@ button:hover{
     font-size:14px;
 }
 
-.info-login{
-    background:#eef3ff;
-    padding:10px;
-    border-radius:8px;
-    margin-top:15px;
-    text-align:left;
-    font-size:13px;
-}
-
 .footer{
     margin-top:20px;
     font-size:12px;
@@ -130,29 +121,6 @@ button:hover{
     <!-- ERROR -->
     <div class="error" id="error"></div>
 
-    <!-- INFO LOGIN -->
-    <div class="info-login">
-
-        <b>Data Login Demo:</b><br><br>
-
-        <b>Admin</b><br>
-        Username: admin<br>
-        Password: admin123<br><br>
-
-        <b>Guru</b><br>
-        Username: guru<br>
-        Password: guru123<br><br>
-
-        <b>Siswa</b><br>
-        Username: siswa<br>
-        Password: siswa123<br><br>
-
-        <b>TAS</b><br>
-        Username: tas<br>
-        Password: tas123
-
-    </div>
-
     <div class="footer">
         © 2026 SMART SMAN 2 Sampit
     </div>
@@ -174,8 +142,6 @@ function login() {
         password === "admin123"
     ){
 
-        alert("Login Admin berhasil");
-
         window.location.href = "dashboard.html";
     }
 
@@ -185,8 +151,6 @@ function login() {
         username === "guru" &&
         password === "guru123"
     ){
-
-        alert("Login Guru berhasil");
 
         window.location.href = "dashboard.html";
     }
@@ -198,8 +162,6 @@ function login() {
         password === "siswa123"
     ){
 
-        alert("Login Siswa berhasil");
-
         window.location.href = "dashboard.html";
     }
 
@@ -209,8 +171,6 @@ function login() {
         username === "tas" &&
         password === "tas123"
     ){
-
-        alert("Login TAS berhasil");
 
         window.location.href = "dashboard.html";
     }
