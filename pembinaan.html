@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pembinaan Siswa</title>
+<title>Pembinaan Siswa - SMART SMAN 2 Sampit</title>
 
 <style>
 
 body{
-    font-family: Arial, sans-serif;
+    font-family:Arial, sans-serif;
     background:#f4f6fb;
     margin:0;
     padding:20px;
@@ -59,6 +59,12 @@ button{
 
 .btn-hapus{
     background:red;
+    color:white;
+    padding:5px 10px;
+}
+
+.btn-surat{
+    background:#673ab7;
     color:white;
     padding:5px 10px;
 }
@@ -139,7 +145,7 @@ table td{
 
 <h2>Pembinaan Siswa</h2>
 
-<p>Data pembinaan, pelanggaran, dan Surat Peringatan siswa.</p>
+<p>Data pembinaan, pelanggaran, surat peringatan, dan surat panggilan siswa.</p>
 
 <label>Tanggal</label>
 <input type="date" id="tanggal">
@@ -148,7 +154,50 @@ table td{
 <input type="text" id="nama" placeholder="Masukkan nama siswa">
 
 <label>Kelas</label>
-<input type="text" id="kelas" placeholder="Masukkan kelas">
+<select id="kelas">
+
+<option value="">-- Pilih Kelas --</option>
+
+<option>XA</option>
+<option>XB</option>
+<option>XC</option>
+<option>XD</option>
+<option>XE</option>
+<option>XF</option>
+<option>XG</option>
+<option>XH</option>
+<option>XI</option>
+<option>XJ</option>
+<option>XK</option>
+<option>XL</option>
+
+<option>XIA</option>
+<option>XIB</option>
+<option>XIC</option>
+<option>XID</option>
+<option>XIE</option>
+<option>XIF</option>
+<option>XIG</option>
+<option>XIH</option>
+<option>XII</option>
+<option>XIJ</option>
+<option>XIK</option>
+<option>XIL</option>
+
+<option>XIIA</option>
+<option>XIIB</option>
+<option>XIIC</option>
+<option>XIID</option>
+<option>XIIE</option>
+<option>XIIF</option>
+<option>XIIG</option>
+<option>XIIH</option>
+<option>XIII</option>
+<option>XIIJ</option>
+<option>XIIK</option>
+<option>XIIL</option>
+
+</select>
 
 <label>Jenis Pelanggaran</label>
 <select id="pelanggaran">
@@ -196,8 +245,9 @@ Import CSV
     <th>Nama</th>
     <th>Kelas</th>
     <th>Pelanggaran</th>
-    <th>Surat Peringatan</th>
+    <th>SP</th>
     <th>Pembinaan</th>
+    <th>Surat</th>
     <th>Aksi</th>
 </tr>
 </thead>
@@ -277,6 +327,19 @@ function tambahData(){
         <td>${pelanggaran}</td>
         <td><span class="${spClass}">${sp}</span></td>
         <td>${pembinaan}</td>
+
+        <td>
+            <button class="btn-surat"
+            onclick="buatSuratPanggilan(
+            '${nama}',
+            '${kelas}',
+            '${pelanggaran}',
+            '${sp}'
+            )">
+            Surat Panggilan
+            </button>
+        </td>
+
         <td>
             <button class="btn-hapus" onclick="hapusRow(this)">
             Hapus
@@ -344,7 +407,7 @@ function exportCSV(){
 
         let row = [];
 
-        for(let j = 0; j < table.rows[i].cells.length - 1; j++){
+        for(let j = 0; j < table.rows[i].cells.length - 2; j++){
 
             row.push(table.rows[i].cells[j].innerText);
 
@@ -362,8 +425,6 @@ function exportCSV(){
     downloadLink.download = "pembinaan_siswa.csv";
 
     downloadLink.href = window.URL.createObjectURL(csvFile);
-
-    downloadLink.style.display = "none";
 
     document.body.appendChild(downloadLink);
 
@@ -415,6 +476,19 @@ function importCSVFile(){
                 <td>${cols[4]}</td>
                 <td><span class="${spClass}">${cols[5]}</span></td>
                 <td>${cols[6]}</td>
+
+                <td>
+                    <button class="btn-surat"
+                    onclick="buatSuratPanggilan(
+                    '${cols[2]}',
+                    '${cols[3]}',
+                    '${cols[4]}',
+                    '${cols[5]}'
+                    )">
+                    Surat Panggilan
+                    </button>
+                </td>
+
                 <td>
                     <button class="btn-hapus" onclick="hapusRow(this)">
                     Hapus
@@ -431,6 +505,113 @@ function importCSVFile(){
     };
 
     reader.readAsText(file);
+}
+
+function buatSuratPanggilan(nama, kelas, pelanggaran, sp){
+
+    const isiSurat = `
+    <html>
+    <head>
+    <title>Surat Panggilan</title>
+
+    <style>
+
+    body{
+        font-family:Arial;
+        padding:40px;
+        line-height:1.8;
+    }
+
+    h2{
+        text-align:center;
+    }
+
+    .ttd{
+        margin-top:80px;
+        width:250px;
+        float:right;
+        text-align:center;
+    }
+
+    </style>
+
+    </head>
+
+    <body>
+
+    <h2>SURAT PANGGILAN ORANG TUA</h2>
+
+    <p>
+    Nomor : 421/SMAN2-SP/${Math.floor(Math.random()*1000)}/2026
+    </p>
+
+    <p>
+    Dengan hormat,
+    </p>
+
+    <p>
+    Sehubungan dengan adanya pelanggaran tata tertib sekolah
+    yang dilakukan oleh:
+    </p>
+
+    <table>
+        <tr>
+            <td>Nama</td>
+            <td>: ${nama}</td>
+        </tr>
+
+        <tr>
+            <td>Kelas</td>
+            <td>: ${kelas}</td>
+        </tr>
+
+        <tr>
+            <td>Pelanggaran</td>
+            <td>: ${pelanggaran}</td>
+        </tr>
+
+        <tr>
+            <td>SP</td>
+            <td>: ${sp}</td>
+        </tr>
+    </table>
+
+    <p>
+    Maka dengan ini kami memohon kehadiran orang tua/wali siswa
+    untuk datang ke sekolah guna melakukan pembinaan bersama.
+    </p>
+
+    <p>
+    Demikian surat panggilan ini disampaikan.
+    Atas perhatian dan kerja samanya kami ucapkan terima kasih.
+    </p>
+
+    <div class="ttd">
+
+        <p>
+        Banjarmasin,
+        ${new Date().toLocaleDateString('id-ID')}
+        </p>
+
+        <p>Wali Kelas / BK</p>
+
+        <br><br><br>
+
+        <p><b>__________________</b></p>
+
+    </div>
+
+    </body>
+    </html>
+    `;
+
+    const win = window.open('', '', 'width=800,height=700');
+
+    win.document.write(isiSurat);
+
+    win.document.close();
+
+    win.print();
 }
 
 </script>
